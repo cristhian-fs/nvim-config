@@ -35,57 +35,61 @@ return {
     opts = {},
   },
   {
-    "dmtrKovalenko/fff.nvim",
-    build = function()
-      -- this will download prebuild binary or try to use existing rustup toolchain to build from source
-      -- (if you are using lazy you can use gb for rebuilding a plugin if needed)
-      require("fff.download").download_or_build_binary()
+    "ibhagwan/fzf-lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {
+      winopts = {
+        height = 0.85,
+        width = 0.70,
+        row = 0.35,
+        col = 0.50,
+        border = "single",
+        backdrop = 100,
+        title = "Fzf",
+        title_pos = "left",
+        fullscreen = false,
+        treesitter = {
+          enabled = true,
+          fzf_colors = { ["hl"] = "-1:reverse", ["hl+"] = "-1:reverse" },
+        },
+        preview = {
+          border = "single",
+          wrap = false,
+          hidden = false,
+          vertical = "down:45%",
+          horizontal = "right:60%",
+          layout = "flex",
+          flip_columns = 100,
+          title = true,
+          title_pos = "left",
+          scrollbar = "float",
+          scrolloff = -1,
+          delay = 20,
+          winopts = {
+            number = true,
+            relativenumber = false,
+            cursorline = true,
+            cursorlineopt = "both",
+            signcolumn = "no",
+            foldenable = false,
+          },
+        },
+      },
+    },
+    config = function(_, opts)
+      local fzf = require "fzf-lua"
+      fzf.setup(opts)
+
+      vim.keymap.set("n", "ff", fzf.files, { desc = "Find files" })
+      vim.keymap.set("n", "fg", fzf.live_grep, { desc = "Live grep" })
+      vim.keymap.set("n", "fb", fzf.buffers, { desc = "Find buffers " })
+      vim.keymap.set("n", "fz", function()
+        fzf.live_grep { search = "", rg_opts = "--fixed-strings" }
+      end, { desc = "Fuzzy grep alt" })
+      vim.keymap.set("n", "fc", function()
+        fzf.grep_cword()
+      end, { desc = "Search current word" })
     end,
-    -- if you are using nixos
-    -- build = "nix run .#release",
-    opts = { -- (optional)
-      debug = {
-        enabled = true, -- we expect your collaboration at least during the beta
-        show_scores = true, -- to help us optimize the scoring system, feel free to share your scores!
-      },
-    },
-    -- No need to lazy-load with lazy.nvim.
-    -- This plugin initializes itself lazily.
-    lazy = false,
-    keys = {
-      {
-        "ff", -- try it if you didn't it is a banger keybinding for a picker
-        function()
-          require("fff").find_files()
-        end,
-        desc = "FFFind files",
-      },
-      {
-        "fg",
-        function()
-          require("fff").live_grep()
-        end,
-        desc = "LiFFFe grep",
-      },
-      {
-        "fz",
-        function()
-          require("fff").live_grep {
-            grep = {
-              modes = { "fuzzy", "plain" },
-            },
-          }
-        end,
-        desc = "Live fffuzy grep",
-      },
-      {
-        "fc",
-        function()
-          require("fff").live_grep { query = vim.fn.expand "<cword>" }
-        end,
-        desc = "Search current word",
-      },
-    },
   },
   {
     "dmtrkovalenko/fold-imports.nvim",
