@@ -92,12 +92,6 @@ return {
     end,
   },
   {
-    "dmtrkovalenko/fold-imports.nvim",
-    -- dir = "~/dev/fold-imports.nvim",
-    opts = {},
-    event = "BufReadPre",
-  },
-  {
     "greggh/claude-code.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
