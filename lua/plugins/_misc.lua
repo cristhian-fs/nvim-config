@@ -1,8 +1,14 @@
 return {
+  -- Git management
+  "tpope/vim-fugitive",
   -- Allows cursor locations in the :e
   "lewis6991/fileline.nvim",
+  --  Automatically jump to the last cursor position
+  "farmergreg/vim-lastplace",
   -- Respects .editorconfig file
   "gpanders/editorconfig.nvim",
+  -- Syntax highlighting for at&t assembly
+  "HealsCodes/vim-gas",
   -- Detect tabstop and shiftwidth automatically
   "tpope/vim-sleuth",
   {
@@ -10,35 +16,110 @@ return {
     opts = {},
   },
   {
+    "kevinhwang91/nvim-ufo",
+    dependencies = "kevinhwang91/promise-async",
+    config = function()
+      require("ufo").setup()
+    end,
+  },
+  {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.8",
-    dependencies = { "nvim-lua/plenary.nvim", "BurntSushi/ripgrep" },
-    defaults = {
-      prompt_prefix = "   ",
-      selection_caret = "❯ ",
-      layout_strategy = "horizontal",
-      layout_config = {
-        horizontal = {
-          preview_width = 0.55,
-        },
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+
+    opts = {},
+  },
+  {
+    "dmtrKovalenko/fff.nvim",
+    build = function()
+      -- this will download prebuild binary or try to use existing rustup toolchain to build from source
+      -- (if you are using lazy you can use gb for rebuilding a plugin if needed)
+      require("fff.download").download_or_build_binary()
+    end,
+    -- if you are using nixos
+    -- build = "nix run .#release",
+    opts = { -- (optional)
+      debug = {
+        enabled = true, -- we expect your collaboration at least during the beta
+        show_scores = true, -- to help us optimize the scoring system, feel free to share your scores!
       },
-      sorting_strategy = "ascending",
-      winblend = 10,
-      border = true,
-      borderchars = {
-        prompt = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-        results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
-        preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+    },
+    -- No need to lazy-load with lazy.nvim.
+    -- This plugin initializes itself lazily.
+    lazy = false,
+    keys = {
+      {
+        "ff", -- try it if you didn't it is a banger keybinding for a picker
+        function()
+          require("fff").find_files()
+        end,
+        desc = "FFFind files",
       },
+      {
+        "fg",
+        function()
+          require("fff").live_grep()
+        end,
+        desc = "LiFFFe grep",
+      },
+      {
+        "fz",
+        function()
+          require("fff").live_grep {
+            grep = {
+              modes = { "fuzzy", "plain" },
+            },
+          }
+        end,
+        desc = "Live fffuzy grep",
+      },
+      {
+        "fc",
+        function()
+          require("fff").live_grep { query = vim.fn.expand "<cword>" }
+        end,
+        desc = "Search current word",
+      },
+    },
+  },
+  {
+    "dmtrkovalenko/fold-imports.nvim",
+    -- dir = "~/dev/fold-imports.nvim",
+    opts = {},
+    event = "BufReadPre",
+  },
+  {
+    "greggh/claude-code.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
     },
     keys = {
-      { "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files" },
-      { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Live grep" },
-      { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Find buffers" },
-      { "<leader>fh", "<cmd>Telescope help_tags<cr>", desc = "Help tags" },
+      {
+        mode = "n",
+        "<leader>ch",
+        "<cmd>ClaudeCode<CR>",
+        desc = "Claude Code",
+      },
     },
+    opts = {
+      command = "awsclaude",
+      window = {
+        split_ratio = 0.4,
+        enter_insert = false,
+        position = "rightbelow",
+      },
+    },
+  },
+  {
+    "github/copilot.vim",
     config = function()
-      require("telescope").setup {}
+      vim.g.copilot_settings = { selectedCompletionModel = "gpt-41-copilot" }
+      vim.g.copilot_integration_id = "vscode-chat"
     end,
   },
   {
@@ -68,50 +149,27 @@ return {
       vim.g.undotree_SetFocusWhenToggle = 1 -- Focus on the undotree window when toggled
     end,
   },
-  { "akinsho/git-conflict.nvim", version = "*", config = true },
+  { "chentoast/marks.nvim", event = "VeryLazy", opts = {} },
   {
-    "akinsho/toggleterm.nvim",
-    keys = {
-      {
-        "<D-S-c>",
-        function()
-          require("toggleterm").toggle()
-        end,
-        desc = "Toggle Terminal (Floating)",
-      },
-    },
-    opts = {
-      open_mapping = [[<D-S-c>]],
-      size = function(term)
-        if term.direction == "float" then
-          return 20 -- Height for floating terminal
-        end
-      end,
-      highlights = {
-        NormalFloat = {
-          guibg = "#16181a",
+    "chrisgrieser/nvim-various-textobjs",
+    config = function()
+      require("various-textobjs").setup {
+        keymaps = {
+          -- Disable all default mappings
+          useDefaults = false,
         },
-        FloatBorder = {
-          guibg = "#16181a",
-        },
-      },
-      float_opts = {
-        border = "curved",
-        width = function()
-          return math.floor(vim.o.columns * 0.8)
-        end,
-        height = function()
-          return math.floor(vim.o.lines * 0.8)
-        end,
-        winblend = 0,
-      },
-      direction = "float",
-      shade_terminals = true,
-      start_in_insert = true,
-      insert_mappings = true,
-      terminal_mappings = true,
-    },
+      }
+
+      -- Custom keymappings for subword text objects
+      vim.keymap.set({ "o", "x" }, "iqw", function()
+        require("various-textobjs").subword "inner"
+      end)
+      vim.keymap.set({ "o", "x" }, "aqw", function()
+        require("various-textobjs").subword "outer"
+      end)
+    end,
   },
+  { "akinsho/git-conflict.nvim", version = "*", config = true },
   {
     "lewis6991/gitsigns.nvim",
     event = "BufRead",
@@ -152,13 +210,9 @@ return {
     "lukas-reineke/indent-blankline.nvim",
     main = "ibl",
     opts = {
-      indent = {
-        highlight = {
-          "WhiteSpace",
-        },
-        char = "┊",
-      },
+      indent = { char = "▏" },
       scope = {
+        enabled = true,
         show_start = false,
         show_end = false,
         char = "│",
@@ -220,7 +274,7 @@ return {
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end, { noremap = true, desc = "Harpoon view" })
 
-      vim.keymap.set("n", "<leader>a", function()
+      vim.keymap.set("n", "<leader>m", function()
         harpoon:list():add()
       end, { noremap = true, desc = "Harpoon this path" })
 
@@ -264,52 +318,28 @@ return {
     dependencies = { "nvim-lua/plenary.nvim" },
   },
   -- Auto close brackets
-  {
-    "saghen/blink.pairs",
-    version = "*", -- (recommended) only required with prebuilt binaries
-    dependencies = "saghen/blink.download",
-    --- @module 'blink.pairs'
-    --- @type blink.pairs.Config
-    opts = {
-      mappings = {
-        -- you can call require("blink.pairs.mappings").enable()
-        -- and require("blink.pairs.mappings").disable()
-        -- to enable/disable mappings at runtime
-        enabled = true,
-        cmdline = true,
-        -- or disable with `vim.g.pairs = false` (global) and `vim.b.pairs = false` (per-buffer)
-        -- and/or with `vim.g.blink_pairs = false` and `vim.b.blink_pairs = false`
-        disabled_filetypes = {},
-        -- see the defaults:
-        -- https://github.com/Saghen/blink.pairs/blob/main/lua/blink/pairs/config/mappings.lua#L14
-        pairs = {},
-      },
-      highlights = {
-        enabled = true,
-        -- requires require('vim._extui').enable({}), otherwise has no effect
-        cmdline = true,
-        groups = {
-          "BlinkPairsOrange",
-          "BlinkPairsPurple",
-          "BlinkPairsBlue",
-        },
-        unmatched_group = "BlinkPairsUnmatched",
-
-        -- highlights matching pairs under the cursor
-        matchparen = {
-          enabled = true,
-          -- known issue where typing won't update matchparen highlight, disabled by default
-          cmdline = false,
-          -- also include pairs not on top of the cursor, but surrounding the cursor
-          include_surrounding = false,
-          group = "BlinkPairsMatchParen",
-          priority = 250,
-        },
-      },
-      debug = false,
-    },
-  },
+  -- {
+  --   "windwp/nvim-autopairs",
+  --   event = "InsertEnter",
+  --   opts = {
+  --     enable_check_bracket_line = false,
+  --   },
+  --   init = function()
+  --     local npairs = require "nvim-autopairs"
+  --     local rule = require "nvim-autopairs.rule"
+  --     local cond = require "nvim-autopairs.conds"
+  --
+  --     npairs.add_rules { rule("|", "|", { "rust", "go", "lua" }):with_move(cond.after_regex "|") }
+  --   end,
+  -- },
   -- Search and replace
+  {
+    "echasnovski/mini.pairs",
+    version = false,
+    config = function()
+      require("mini.pairs").setup()
+    end,
+  },
   {
     "MagicDuck/grug-far.nvim",
     keys = {
@@ -404,30 +434,47 @@ return {
       },
     },
   },
-  -- {
-  --   "andweeb/presence.nvim",
-  --   config = function()
-  --     require("presence").setup {
-  --       auto_update = true, -- Update activity based on autocmd events (if `false`, map or manually execute `:lua package.loaded.presence:update()`)
-  --       neovim_image_text = "The One True Text Editor", -- Text displayed when hovered over the Neovim image
-  --       main_image = "neovim", -- Main image display (either "neovim" or "file")
-  --       log_level = nil, -- Log messages at or above this level (one of the following: "debug", "info", "warn", "error")
-  --       debounce_timeout = 10, -- Number of seconds to debounce events (or calls to `:lua package.loaded.presence:update(<filename>, true)`)
-  --       enable_line_number = false, -- Displays the current line number instead of the current project
-  --       blacklist = {}, -- A list of strings or Lua patterns that disable Rich Presence if the current file name, path, or workspace matches
-  --       buttons = true, -- Configure Rich Presence button(s), either a boolean to enable/disable, a static table (`{{ label = "<label>", url = "<url>" }, ...}`, or a function(buffer: string, repo_url: string|nil): table)
-  --       file_assets = {}, -- Custom file asset definitions keyed by file names and extensions (see default config at `lua/presence/file_assets.lua` for reference)
-  --       show_time = true, -- Show the timer
-  --
-  --       -- Rich Presence text options
-  --       editing_text = "Editing %s", -- Format string rendered when an editable file is loaded in the buffer (either string or function(filename: string): string)
-  --       file_explorer_text = "Browsing %s", -- Format string rendered when browsing a file explorer (either string or function(file_explorer_name: string): string)
-  --       git_commit_text = "Committing changes", -- Format string rendered when committing changes in git (either string or function(filename: string): string)
-  --       plugin_manager_text = "Managing plugins", -- Format string rendered when managing plugins (either string or function(plugin_manager_name: string): string)
-  --       reading_text = "Reading %s", -- Format string rendered when a read-only or unmodifiable file is loaded in the buffer (either string or function(filename: string): string)
-  --       workspace_text = "Working on %s", -- Format string rendered when in a git repository (either string or function(project_name: string|nil, filename: string): string)
-  --       line_number_text = "Line %s out of %s", -- Format string rendered when `enable_line_number` is set to true (either string or function(line_number: number, line_count: number): string)
-  --     }
-  --   end,
-  -- },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    opts = {},
+    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "NickvanDyke/opencode.nvim",
+    version = "*",
+    config = function()
+      local cmd = "awslogin && opencode --port"
+
+      ---@type opencode.Opts
+      vim.g.opencode_opts = {
+        server = {
+          start = function()
+            require("opencode.terminal").start(cmd)
+          end,
+          stop = function()
+            require("opencode.terminal").stop()
+          end,
+          toggle = function()
+            require("opencode.terminal").toggle(cmd)
+          end,
+        },
+      }
+
+      vim.o.autoread = true
+
+      vim.keymap.set({ "n", "x" }, "<leader>a", function()
+        require("opencode").ask("@this: ", { submit = true })
+      end, { desc = "Ask opencode" })
+      vim.keymap.set({ "n", "x" }, "<leader>x", function()
+        require("opencode").select()
+      end, { desc = "Execute opencode action" })
+      vim.keymap.set("n", "<leader>o", function()
+        require("opencode").toggle()
+      end, { desc = "Toggle opencode" })
+    end,
+  },
+  {
+    "esmuellert/codediff.nvim",
+    cmd = "CodeDiff",
+  },
 }

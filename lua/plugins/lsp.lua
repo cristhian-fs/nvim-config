@@ -5,24 +5,17 @@ return {
       require("conform").setup {
         formatters_by_ft = {
           lua = { "stylua" },
-          rust = { "rustfmt" },
-          c = { "clang-format" },
-          cpp = { "clang-format" },
-          python = { "isort", "black" },
-          javascript = { "prettierd", "prettier", "biome", stop_after_first = true },
-          markdown = { "prettierd", "prettier", "biome", stop_after_first = true },
-          typescript = { "prettierd", "prettier", "biome", stop_after_first = true },
-          typescriptreact = { "prettierd", "prettier", "biome", stop_after_first = true },
-          css = { "prettierd", "prettier", "biome", stop_after_first = true },
-          svg = { "xmlformat" },
-          json = { "prettierd", "prettier", "biome", stop_after_first = true },
-          yaml = { "prettierd", "prettier", "biome", stop_after_first = true },
-          graphql = { "prettierd", "prettier", "biome", stop_after_first = true },
-          rescript = { "rescript-format" },
-          ocaml = { "ocamlformat" },
-          sql = { "pg_format" },
-          proto = { "clang-format" },
-          ocaml_mlx = { "ocamlformat_mlx" },
+          javascript = { "prettierd", "prettier" },
+          javascriptreact = { "prettierd", "prettier" },
+          typescript = { "prettierd", "prettier" },
+          typescriptreact = { "prettierd", "prettier" },
+          html = { "prettierd", "prettier" },
+          css = { "prettierd", "prettier" },
+          json = { "prettierd", "prettier" },
+          yaml = { "prettierd", "prettier" },
+          markdown = { "prettierd", "prettier" },
+          svg = { "prettier" },
+          astro = { "prettier" },
         },
       }
 
@@ -32,14 +25,7 @@ return {
         }
       end
 
-      local function format_and_save()
-        vim.cmd "stopinsert"
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-        format()
-        vim.cmd "write"
-      end
-
-      vim.api.nvim_create_user_command("Format", format, { desc = "Format current buffer with LSP" })
+      vim.keymap.set({ "n", "i" }, "<F12>", format, { desc = "Format", silent = true })
     end,
   },
   {
@@ -55,15 +41,22 @@ return {
             -- See the configuration section for more details
             -- Load luvit types when the `vim.uv` word is found
             { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+            { path = "${3rd}/luassert/library", words = {
+              "assert",
+            } },
+            {
+              path = "${3rd}/busted/library",
+              words = {
+                "describe",
+                "it",
+                "before_each",
+                "after_each",
+              },
+            },
           },
         },
       },
-      "ocaml-mlx/ocaml_mlx.nvim",
       "neovim/nvim-lspconfig",
-      {
-        "mrcjkb/rustaceanvim",
-        lazy = false,
-      },
       {
         "aznhe21/actions-preview.nvim",
         event = "LspAttach",
@@ -75,15 +68,13 @@ return {
         },
       },
       {
-        "luckasRanarison/tailwind-tools.nvim",
-        name = "tailwind-tools",
-        build = ":UpdateRemotePlugins",
-        event = "BufWinEnter",
-        dependencies = {
-          "nvim-treesitter/nvim-treesitter",
-        },
+        "brenoprata10/nvim-highlight-colors",
+        event = { "BufReadPre", "BufNewFile" },
         opts = {
-          custom_filetypes = "rescript",
+          render = "virtual",
+          virtual_symbol = "■",
+          enable_named_colors = false,
+          enable_tailwind = true,
         },
       },
       {
@@ -132,11 +123,13 @@ return {
         lsp_map("<D-u>", vim.lsp.buf.signature_help, "Signature Documentation")
 
         -- Various picker for lsp related stuff
-        lsp_map("gr", Snacks.picker.lsp_references, "[G]oto [R]eferences")
-        lsp_map("gi", Snacks.picker.lsp_implementations, "[G]oto [I]mplementations")
-        lsp_map("<A-t>", Snacks.picker.lsp_type_definitions, "[G]oto [T]ype Definitions")
-        lsp_map("<D-l>", Snacks.picker.lsp_workspace_symbols, "Search workspace symbols")
-        lsp_map("<leader>ss", Snacks.picker.lsp_symbols, "[S]earch [S]ymbols")
+        if Snacks and Snacks.picker then
+          lsp_map("gr", Snacks.picker.lsp_references, "[G]oto [R]eferences")
+          lsp_map("gi", Snacks.picker.lsp_implementations, "[G]oto [I]mplementations")
+          lsp_map("<A-t>", Snacks.picker.lsp_type_definitions, "[G]oto [T]ype Definitions")
+          lsp_map("<D-l>", Snacks.picker.lsp_workspace_symbols, "Search workspace symbols")
+          lsp_map("<leader>ss", Snacks.picker.lsp_symbols, "[S]earch [S]ymbols")
+        end
 
         lsp_map("<leader>lr", function()
           vim.cmd "LspRestart"
@@ -217,14 +210,6 @@ return {
         root_markers = { ".git" },
       })
 
-      -- Servers with custom command or settings need vim.lsp.config()
-      vim.lsp.config("clangd", {
-        cmd = {
-          "clangd",
-          "--offset-encoding=utf-16",
-        },
-      })
-
       vim.lsp.config("lua_ls", {
         settings = {
           Lua = {
@@ -239,49 +224,44 @@ return {
         settings = { includeAllWorkspaceSymbols = true },
       })
 
-      vim.lsp.config("typos_lsp", {
-        single_file_support = false,
-        init_options = { diagnosticSeverity = "WARN" },
-      })
-
       vim.lsp.config("ts_ls", {
         on_attach = on_lsp_attach,
       })
 
-      vim.lsp.enable "dhall_lsp_server"
-      vim.lsp.enable "marksman"
-      vim.lsp.enable "taplo"
-      vim.lsp.enable "astro"
-      vim.lsp.enable "eslint"
-      vim.lsp.enable "html"
-      vim.lsp.enable "pylsp"
-      vim.lsp.enable "zls"
-      vim.lsp.enable "ocamllsp"
-      vim.lsp.enable "ts_ls"
-      vim.lsp.enable "lua_ls"
-
-      vim.g.rustaceanvim = {
-        -- LSP configuration
-        server = {
-          on_attach = on_lsp_attach,
-          logfile = "/tmp/rustaceanvim.log",
-          default_settings = {
-            -- rust-analyzer language server configuration
-            ["rust-analyzer"] = {
-              check = {
-                allTargets = false,
-              },
-              cargo = {
-                targetDir = true,
-              },
-              files = {
-                excludeDirs = { "target", "node_modules", ".git", ".sl" },
+      vim.lsp.config("tailwindcss", {
+        settings = {
+          tailwindCSS = {
+            experimental = {
+              classRegex = {
+                { "cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+                { "cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)" },
               },
             },
           },
         },
-        dap = {},
-      }
+        filetypes = {
+          "html",
+          "css",
+          "scss",
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact",
+          "vue",
+          "svelte",
+          "astro",
+          "rescript",
+        },
+      })
+
+      vim.lsp.enable "lua_ls"
+      vim.lsp.enable "ts_ls"
+      vim.lsp.enable "html"
+      vim.lsp.enable "tailwindcss"
+      vim.lsp.enable "eslint"
+      vim.lsp.enable "jsonls"
+      vim.lsp.enable "cssls"
+      vim.lsp.enable "astro"
 
       require("mason").setup()
     end,

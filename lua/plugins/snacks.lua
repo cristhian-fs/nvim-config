@@ -12,7 +12,7 @@ return {
         max_size = 2 * 1024 * 1024, -- 2MB
       },
       image = {
-        enabled = false,
+        enabled = true,
       },
       terminal = {},
       picker = {
@@ -28,14 +28,6 @@ return {
         },
       },
     }
-
-    local function find_files()
-      require("snacks.picker").files {
-        prompt = "🍪 ",
-        wrap = true,
-        find_command = { "rg", "--files", "--no-require-git" },
-      }
-    end
 
     local function find_recent_files()
       -- Use smart() which combines recent files, buffers and files (similar to smart_open)
@@ -74,9 +66,9 @@ return {
     end
 
     -- Keep the same keymaps but update the functions
-    vim.keymap.set("n", "<D-k>", find_recent_files_or_files, { desc = "Search recent Files" })
-    vim.keymap.set("n", "<D-S-f>", live_grep, { desc = "Live Grep" })
-    vim.keymap.set("n", "<D-m>", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
+    vim.keymap.set("n", "<A-k>", find_recent_files_or_files, { desc = "Search recent Files" })
+    vim.keymap.set("n", "<A-S-f>", live_grep, { desc = "Live Grep" })
+    vim.keymap.set("n", "<A-m>", require("snacks.picker").diagnostics, { desc = "Diagnostics" })
     vim.keymap.set("n", "<leader>b", require("snacks.picker").buffers, { desc = "Buffers" })
     vim.keymap.set("n", "<leader>gb", require("snacks.picker").git_branches, { desc = "Git branches" })
     vim.keymap.set("n", "<leader>sw", require("snacks.picker").grep_word, { desc = "Search word" })
@@ -95,7 +87,7 @@ return {
 
     vim.keymap.set("n", "gs", open_file_under_cursor_in_picker, { desc = "Search file name under cursor" })
 
-    vim.keymap.set("n", "<D-f>", function()
+    vim.keymap.set("n", "<A-f>", function()
       require("snacks.picker").lines {
         layout = {
           preset = "select",
@@ -103,7 +95,10 @@ return {
       }
     end, { desc = "Fuzzily search in current buffer" })
 
-    vim.keymap.set("n", "<D-s-;>", require("snacks.picker").commands, { desc = "Search commands" })
+    vim.keymap.set("n", "<A-s-;>", require("snacks.picker").commands, { desc = "Search commands" })
     vim.keymap.set("n", "<leader>sh", require("snacks.picker").help, { desc = "Search help" })
+    vim.keymap.set("n", "<leader>ut", function()
+      Snacks.picker.colorschemes()
+    end, { desc = "Theme picker" })
   end,
 }

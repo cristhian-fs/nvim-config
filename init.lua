@@ -2,6 +2,11 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 vim.g.kitty_fast_forwarded_modifiers = "super"
 
+local IS_STREAMING = os.getenv "STREAM" ~= nil
+if IS_STREAMING then
+  vim.print "Subscribe to my twitter @neogoose_btw"
+end
+
 -- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -13,15 +18,29 @@ vim.wo.relativenumber = true
 -- Default value for tabstop
 vim.o.shiftwidth = 2
 vim.o.tabstop = 2
-vim.opt.softtabstop = 2
-vim.opt.expandtab = true
 
 vim.o.tags = "./tags;"
 -- Enable mouse mode
 vim.o.mouse = "a"
-vim.o.foldmethod = "manual"
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.require'ufo'.foldexpr()"
+vim.opt.foldlevel = 99
 
 vim.o.autochdir = true
+
+if os.getenv "SSH_CONNECTION" ~= nill then
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy "+",
+      ["*"] = require("vim.ui.clipboard.osc52").copy "*",
+    },
+    paste = {
+      ["+"] = require("vim.ui.clipboard.osc52").paste "+",
+      ["*"] = require("vim.ui.clipboard.osc52").paste "*",
+    },
+  }
+end
 
 -- Sync clipboard between OS and Neovim.
 vim.o.clipboard = "unnamedplus"
@@ -123,7 +142,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 
 vim.filetype.add { extension = { wgsl = "wgsl" } }
-
 vim.keymap.set("n", "gf", function()
   require("fff").open_file_under_cursor(function()
     vim.api.nvim_command "wincmd k"
@@ -133,6 +151,9 @@ end, { silent = true })
 -- Set of commands that should be executed on startup
 vim.cmd [[command! -nargs=1 Browse silent lua vim.fn.system('open ' .. vim.fn.shellescape(<q-args>, 1))]]
 vim.cmd [[highlight DiagnosticUnderlineError cterm=undercurl gui=undercurl guisp=#f87171]]
+
+-- Set theme
+vim.cmd "colorscheme rose-pine"
 
 local function smart_delete(key)
   local l = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line number
@@ -166,10 +187,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
--- require('config.mason')
--- require('config.lsp')
--- require('config.typescript')
--- require('config.null-ls')
--- require('config.diagnostics')
 require "keymap"
 require("language-specific-macro").setupMacro()

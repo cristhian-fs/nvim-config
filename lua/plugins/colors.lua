@@ -1,48 +1,7 @@
-local theme = os.getenv "NEOVIM_THEME" or "cyberdream"
-
-local function get_goose_lualine_theme()
-  if theme == "catppuccin" then
-    local catpuccin = require "catppuccin.palettes.mocha"
-    return {
-      normal = {
-        a = { fg = catpuccin.crust, bg = catpuccin.mauve },
-        b = { fg = catpuccin.mauve, bg = catpuccin.base },
-        c = { fg = catpuccin.subtext0, bg = catpuccin.base },
-      },
-
-      insert = { a = { fg = catpuccin.base, bg = catpuccin.peach, gui = "bold" } },
-      visual = { a = { fg = catpuccin.base, bg = catpuccin.sky } },
-      replace = { a = { fg = catpuccin.base, bg = catpuccin.green } },
-
-      inactive = {
-        a = { fg = catpuccin.text, bg = catpuccin.surface0 },
-        b = { fg = catpuccin.text, bg = catpuccin.surface0 },
-        c = { fg = catpuccin.text, bg = catpuccin.surface0 },
-      },
-    }
-  end
-
-  return "auto"
-end
-
 return {
-  {
-    "uga-rosa/ccc.nvim",
-    keys = {
-      { mode = "n", "<leader>cc", "<cmd>CccPick<cr>" },
-    },
-    opts = {
-      highlighter = {
-        auto_enable = true,
-        lsp = false,
-      },
-    },
-  },
-
   {
     "catppuccin/nvim",
     name = "catppuccin",
-    enabled = theme == "catppuccin",
     priority = 1000,
     opts = {
       integrations = {
@@ -61,7 +20,6 @@ return {
     },
     init = function()
       local catpuccin = require "catppuccin.palettes.mocha"
-      vim.cmd.colorscheme "catppuccin"
 
       vim.api.nvim_set_hl(0, "EdgyWinBar", { bg = catpuccin.mantle })
       vim.api.nvim_set_hl(0, "EdgyNormal", { bg = catpuccin.mantle })
@@ -77,12 +35,28 @@ return {
     opts = {},
   },
   {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    priority = 1000,
+    config = function()
+      vim.cmd "colorscheme rose-pine"
+    end,
+    opts = {
+      styles = {
+        bold = true,
+        italic = false,
+        transparency = false,
+      },
+    },
+  },
+  {
     "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    enabled = theme == "tokyonight",
+    name = "tokyonight",
+    style = "night",
+    transparent = true,
     opts = {
-      transparent = true,
       sidebars = "transparent",
     },
     init = function()
@@ -91,28 +65,15 @@ return {
   },
   {
     "scottmckendry/cyberdream.nvim",
-    enabled = theme == "cyberdream",
+    name = "cyberdream",
     lazy = false,
-    priority = 1000000,
+    priority = 1000,
     opts = {
       transparent = true,
       borderless_pickers = false,
       saturation = 0.95,
       cache = true,
     },
-    init = function()
-      vim.cmd "colorscheme cyberdream"
-      vim.api.nvim_set_hl(0, "TroubleNormal", { bg = "none", ctermbg = "none" })
-      vim.api.nvim_set_hl(0, "TroubleNormalNC", { bg = "none", ctermbg = "none" })
-      vim.api.nvim_set_hl(0, "TroubleNormal", { bg = "none", ctermbg = "none" })
-      vim.api.nvim_set_hl(0, "TroubleNormalNC", { bg = "none", ctermbg = "none" })
-      vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#3c4048", bg = "none" })
-      vim.api.nvim_set_hl(0, "IndentBlanklineChar", { fg = "#7b8496" })
-      vim.api.nvim_set_hl(0, "TreesitterContext", { bg = "#232429" })
-      vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", { bg = "#232429" })
-      vim.api.nvim_set_hl(0, "TreesitterContextBottom", { bg = "#232429", underline = true })
-      vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#ffffff" })
-    end,
   },
   {
     priority = 1000,
@@ -151,7 +112,7 @@ return {
           disabled_filetypes = {
             statusline = { "alpha", "NvimTree", "trouble", "Outline" },
           },
-          theme = get_goose_lualine_theme(),
+          theme = "auto",
           component_separators = "|",
           section_separators = "",
         },
@@ -159,22 +120,6 @@ return {
           lualine_a = {
             {
               "mode",
-              fmt = function(str)
-                -- Define single-letter mode mappings
-                local mode_map = {
-                  ["NORMAL"] = "NR",
-                  ["INSERT"] = "IN",
-                  ["VISUAL"] = "VV",
-                  ["V-LINE"] = "VL",
-                  ["V-BLOCK"] = "VB",
-                  ["REPLACE"] = "RP",
-                  ["COMMAND"] = "CM",
-                  ["TERMINAL"] = "TR",
-                  ["SELECT"] = "SL",
-                }
-                -- Return the mapped single letter or first letter if not found
-                return mode_map[str] or str:sub(1, 1)
-              end,
             },
           },
           lualine_c = {

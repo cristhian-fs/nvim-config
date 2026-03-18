@@ -4,7 +4,7 @@ return {
     lazy = true,
     cmd = { "Outline", "OutlineOpen" },
     keys = {
-      { "<D-b>", "<cmd>Outline<CR>", desc = "Toggle outline" },
+      { "<C-b>", "<cmd>Outline<CR>", desc = "Toggle outline" },
     },
     opts = {
       outline_window = {
