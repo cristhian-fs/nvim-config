@@ -59,7 +59,7 @@ local macros = {
     },
     {
       binding = "sap",
-      desc = "Amend all staged files and and push stack using spr",
+      desc = "Amend all staged files and push stack using spr",
       keys = "<cmd>terminal fish --command 'git commit --amend --no-edit && git spr update'<cr><C-w>k",
     },
     {
