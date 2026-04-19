@@ -17,6 +17,9 @@ return {
           svg = { "prettier" },
           astro = { "prettier" },
         },
+        format_on_save = {
+          timeout_ms = 3000,
+        },
       }
 
       local function format()
