@@ -14,14 +14,14 @@ vim.wo.relativenumber = true
 vim.o.shiftwidth = 2
 vim.o.tabstop = 2
 
+vim.o.conceallevel = 1
+
 vim.o.tags = "./tags;"
 -- Enable mouse mode
 vim.o.mouse = "a"
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.require'ufo'.foldexpr()"
 vim.opt.foldlevel = 99
-
-vim.o.autochdir = true
 
 if os.getenv "SSH_CONNECTION" ~= nill then
   vim.g.clipboard = {
@@ -146,9 +146,6 @@ end, { silent = true })
 -- Set of commands that should be executed on startup
 vim.cmd [[command! -nargs=1 Browse silent lua vim.fn.system('open ' .. vim.fn.shellescape(<q-args>, 1))]]
 vim.cmd [[highlight DiagnosticUnderlineError cterm=undercurl gui=undercurl guisp=#f87171]]
-
--- Set theme
-vim.cmd "colorscheme rose-pine"
 
 local function smart_delete(key)
   local l = vim.api.nvim_win_get_cursor(0)[1] -- Get the current cursor line number
