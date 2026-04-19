@@ -1,38 +1,12 @@
 return {
-  -- Git management
-  "tpope/vim-fugitive",
-  -- Allows cursor locations in the :e
-  "lewis6991/fileline.nvim",
-  --  Automatically jump to the last cursor position
-  "farmergreg/vim-lastplace",
-  -- Respects .editorconfig file
-  "gpanders/editorconfig.nvim",
-  -- Syntax highlighting for at&t assembly
-  "HealsCodes/vim-gas",
-  -- Detect tabstop and shiftwidth automatically
-  "tpope/vim-sleuth",
   {
     "lewis6991/foldsigns.nvim",
     opts = {},
   },
   {
-    "kevinhwang91/nvim-ufo",
-    dependencies = "kevinhwang91/promise-async",
-    config = function()
-      require("ufo").setup()
-    end,
-  },
-  {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.8",
     dependencies = { "nvim-lua/plenary.nvim" },
-  },
-  {
-    "ibhagwan/fzf-lua",
-    -- optional for icon support
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-
-    opts = {},
   },
   {
     "ibhagwan/fzf-lua",
@@ -114,25 +88,6 @@ return {
     },
   },
   {
-    "github/copilot.vim",
-    config = function()
-      vim.g.copilot_settings = { selectedCompletionModel = "gpt-41-copilot" }
-      vim.g.copilot_integration_id = "vscode-chat"
-    end,
-  },
-  {
-    "dmtrkovalenko/project.nvim",
-    config = function()
-      require("project_nvim").setup {
-        detection_methods = { "pattern" },
-        patterns = { ".git", ".sl" },
-        after_project_selection_callback = function()
-          require("persistence").load()
-        end,
-      }
-    end,
-  },
-  {
     "mbbill/undotree",
     keys = {
       {
@@ -168,58 +123,6 @@ return {
     end,
   },
   { "akinsho/git-conflict.nvim", version = "*", config = true },
-  {
-    "lewis6991/gitsigns.nvim",
-    event = "BufRead",
-    opts = {
-      signs = {
-        add = { text = "┃" },
-        change = { text = "┃" },
-        delete = { text = "_" },
-        topdelete = { text = "‾" },
-        changedelete = { text = "~" },
-        untracked = { text = "┆" },
-      },
-      on_attach = function(bufnr)
-        local gitsigns = require "gitsigns"
-        local function gsmap(mode, l, r, opts)
-          opts = opts or {}
-          opts.buffer = bufnr
-          vim.keymap.set(mode, l, r, opts)
-        end
-
-        gsmap("n", "[<Home>", function()
-          gitsigns.nav_hunk "prev"
-        end, { remap = true, desc = "[G]o to [P]revious Hunk" })
-        gsmap("n", "]<End>", function()
-          gitsigns.nav_hunk "next"
-        end, { remap = true, desc = "[G]it go to [N]ext Hunk" })
-        gsmap("n", "<leader>gd", gitsigns.preview_hunk, { desc = "[G]it [D]iff Hunk" })
-        gsmap("n", "<leader>gr", gitsigns.reset_hunk, { desc = "[G]it [R]eset hunk" })
-        gsmap("n", "<leader>gu", gitsigns.undo_stage_hunk, { desc = "[G]it [U]nstage hunk" })
-        gsmap("n", "<leader>gs", gitsigns.stage_hunk, { desc = "[G]it [S]tage hunk" })
-        gsmap("n", "<leader>gl", gitsigns.toggle_current_line_blame, { desc = "[G]it [B]lame" })
-      end,
-    },
-  },
-
-  {
-    -- Add indentation guides even on blank lines
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    opts = {
-      indent = { char = "▏" },
-      scope = {
-        enabled = true,
-        show_start = false,
-        show_end = false,
-        char = "│",
-        highlight = {
-          "IndentBlanklineChar",
-        },
-      },
-    },
-  },
 
   {
     "kylechui/nvim-surround",
@@ -240,57 +143,6 @@ return {
     },
   },
 
-  {
-    "ThePrimeagen/harpoon",
-    branch = "harpoon2",
-    commit = "e76cb03",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      local harpoon = require "harpoon"
-      harpoon:setup {
-        settings = {
-          save_on_toggle = true,
-          mark_branch = true,
-          excluded_filetypes = { "harpoon", "NvimTree", "TelescopePrompt" },
-        },
-        projects = {
-          ["$HOME/dev/"] = {
-            mark = {
-              marks = { "1", "2", "3", "4", "5" },
-              sign = false,
-              hl = "String",
-              numhl = "Comment",
-              size = 1,
-              hidden = false,
-              stacked = false,
-            },
-          },
-        },
-      }
-
-      vim.keymap.set("n", "<leader>h", function()
-        harpoon.ui:toggle_quick_menu(harpoon:list())
-      end, { noremap = true, desc = "Harpoon view" })
-
-      vim.keymap.set("n", "<leader>m", function()
-        harpoon:list():add()
-      end, { noremap = true, desc = "Harpoon this path" })
-
-      vim.keymap.set("n", "<leader>q", function()
-        harpoon:list():select(1)
-      end, { desc = "Harpoon #1" })
-      vim.keymap.set("n", "<leader>w", function()
-        harpoon:list():select(2)
-      end, { desc = "Harpoon #2" })
-      vim.keymap.set("n", "<leader>e", function()
-        harpoon:list():select(3)
-      end, { desc = "Harpoon #3" })
-      vim.keymap.set("n", "<leader>r", function()
-        harpoon:list():select(4)
-      end, { desc = "Harpoon #4" })
-    end,
-  },
-
   -- A lightbulb highlight for code actions
   {
     "kosayoda/nvim-lightbulb",
@@ -300,20 +152,6 @@ return {
         autocmd = { enabled = true },
       }
     end,
-  },
-  -- Autocompletion and version display for rust projects
-  {
-    "saecki/crates.nvim",
-    event = "BufRead Cargo.toml",
-    opts = {
-      lsp = {
-        enabled = true,
-        actions = true,
-        completion = true,
-        hover = true,
-      },
-    },
-    dependencies = { "nvim-lua/plenary.nvim" },
   },
   -- Auto close brackets
   -- {
@@ -339,57 +177,6 @@ return {
     end,
   },
   {
-    "MagicDuck/grug-far.nvim",
-    keys = {
-      {
-        mode = "n",
-        "<D-S-r>",
-        "<cmd>GrugFar<CR>",
-      },
-    },
-    opts = {},
-  },
-  {
-    "folke/noice.nvim",
-    event = "VeryLazy",
-    dependencies = { "MunifTanjim/nui.nvim" },
-    opts = {
-      views = {
-        cmdline_popup = {
-          position = { row = 23 },
-        },
-      },
-      presets = {
-        lsp_doc_border = true,
-      },
-      lsp = {
-        progress = {
-          enabled = false,
-        },
-        hover = {
-          enabled = false,
-        },
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
-        },
-      },
-      notify = {
-        view = "mini",
-      },
-      routes = {
-        {
-          filter = {
-            event = "notify",
-            find = "No information available",
-          },
-          opts = { skip = true },
-        },
-      },
-    },
-  },
-  {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
@@ -413,63 +200,9 @@ return {
     opts = {},
   },
   {
-    "dmtrKovalenko/caps-word.nvim",
-    -- dir = "~/dev/caps-word.nvim",
-    lazy = true,
-    opts = {
-      enter_callback = function()
-        vim.notify("On", vim.log.levels.INFO, { title = "Caps Word:" })
-      end,
-      exit_callback = function()
-        vim.notify("Off", vim.log.levels.INFO, { title = "Caps Word:" })
-      end,
-    },
-    keys = {
-      {
-        mode = { "i" },
-        "<C-s>",
-        "<cmd>lua require('caps-word').toggle()<CR>",
-      },
-    },
-  },
-  {
     "MeanderingProgrammer/render-markdown.nvim",
     opts = {},
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-  },
-  {
-    "NickvanDyke/opencode.nvim",
-    version = "*",
-    config = function()
-      local cmd = "awslogin && opencode --port"
-
-      ---@type opencode.Opts
-      vim.g.opencode_opts = {
-        server = {
-          start = function()
-            require("opencode.terminal").start(cmd)
-          end,
-          stop = function()
-            require("opencode.terminal").stop()
-          end,
-          toggle = function()
-            require("opencode.terminal").toggle(cmd)
-          end,
-        },
-      }
-
-      vim.o.autoread = true
-
-      vim.keymap.set({ "n", "x" }, "<leader>a", function()
-        require("opencode").ask("@this: ", { submit = true })
-      end, { desc = "Ask opencode" })
-      vim.keymap.set({ "n", "x" }, "<leader>x", function()
-        require("opencode").select()
-      end, { desc = "Execute opencode action" })
-      vim.keymap.set("n", "<leader>o", function()
-        require("opencode").toggle()
-      end, { desc = "Toggle opencode" })
-    end,
   },
   {
     "esmuellert/codediff.nvim",
