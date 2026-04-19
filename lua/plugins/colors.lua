@@ -30,6 +30,20 @@ return {
     end,
   },
   {
+    "datsfilipe/vesper.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      italics = {
+        comments = false, -- Boolean: Italicizes comments
+        keywords = false, -- Boolean: Italicizes keywords
+        functions = false, -- Boolean: Italicizes functions
+        strings = false, -- Boolean: Italicizes strings
+        variables = false, -- Boolean: Italicizes variables
+      },
+    },
+  },
+  {
     "xiyaowong/transparent.nvim",
     lazy = false,
     opts = {},
@@ -38,9 +52,6 @@ return {
     "rose-pine/neovim",
     name = "rose-pine",
     priority = 1000,
-    config = function()
-      vim.cmd "colorscheme rose-pine"
-    end,
     opts = {
       styles = {
         bold = true,
@@ -59,9 +70,6 @@ return {
     opts = {
       sidebars = "transparent",
     },
-    init = function()
-      vim.cmd "colorscheme tokyonight"
-    end,
   },
   {
     "scottmckendry/cyberdream.nvim",
@@ -69,11 +77,20 @@ return {
     lazy = false,
     priority = 1000,
     opts = {
+      variant = "light",
       transparent = true,
       borderless_pickers = false,
-      saturation = 0.95,
       cache = true,
     },
+    config = function()
+      require("cyberdream").setup {
+        variant = "default",
+        transparent = false,
+        borderless_pickers = false,
+        cache = true,
+      }
+      vim.cmd "colorscheme cyberdream"
+    end,
   },
   {
     priority = 1000,
