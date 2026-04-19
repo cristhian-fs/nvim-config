@@ -17,10 +17,6 @@ vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true })
 vim.keymap.set("x", "<A-j>", ":move '>+1<CR>gv=gv", { noremap = true, silent = true })
 vim.keymap.set("x", "<A-k>", ":move '<-2<CR>gv=gv", { noremap = true, silent = true })
 
--- Open git
-vim.keymap.set("n", "<A-g>", "<cmd>Git<CR>", { silent = true })
-vim.keymap.set("n", "<C-S-g>", "<cmd>above Git<CR>", { silent = true })
-
 -- Move to next occurrence using native search
 vim.keymap.set("n", "<C-n>", "*", { silent = true })
 vim.keymap.set("n", "<C-S-n>", "#", { silent = true })
@@ -169,3 +165,31 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Go to bottom window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Go to top window" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+
+-- Obsidian
+local map = vim.keymap.set
+
+map("n", "<leader>on", "<cmd>ObsidianNew<cr>", { desc = "New note" })
+map("n", "<leader>oN", "<cmd>ObsidianNewFromTemplate<cr>", { desc = "New from template" })
+map("n", "<leader>oq", "<cmd>ObsidianQuickSwitch<cr>", { desc = "Quick switch" })
+map("n", "<leader>ot", "<cmd>ObsidianToday<cr>", { desc = "Today" })
+map("n", "<leader>oy", "<cmd>ObsidianYesterday<cr>", { desc = "Yesterday" })
+map("n", "<leader>od", "<cmd>ObsidianDailies<cr>", { desc = "Dailies List" })
+
+-- actual note
+map("n", "<leader>ob", "<cmd>ObsidianBacklinks<cr>", { desc = "Backlinks" })
+map("n", "<leader>or", "<cmd>ObsidianRename<cr>", { desc = "Rename note" })
+map("n", "<leader>oo", "<cmd>ObsidianOpen<cr>", { desc = "Open in Obsidian" })
+map("n", "<leader>op", "<cmd>ObsidianPasteImg<cr>", { desc = "Paste Image" })
+map("n", "<leader>oc", "<cmd>ObsidianTOC<cr>", { desc = "Table of Contents" })
+
+-- links
+map("n", "<leader>of", "<cmd>ObsidianFollowLink<cr>", { desc = "Follow link" })
+map("n", "gf", "<cmd>ObsidianFollowLink<cr>", { desc = "Follow link" })
+
+map("n", "<cr>", function ()
+	if require("obsidian").util.cursor_on_markdown_link() then
+		return "<cmd>ObsidianFollowLink<cr>"
+	end
+	return "<cr>"
+end, { buffer = true, expr = true })
