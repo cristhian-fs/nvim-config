@@ -123,7 +123,6 @@ return {
     end,
   },
   { "akinsho/git-conflict.nvim", version = "*", config = true },
-
   {
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features

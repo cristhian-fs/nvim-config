@@ -30,6 +30,64 @@ return {
     end,
   },
   {
+    "Tsuzat/NeoSolarized.nvim",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("NeoSolarized").setup {
+        style = "light",
+        transparent = false,
+        styles = {
+          comments = { italic = false },
+          keywords = { italic = false },
+          functions = { bold = true },
+          string = { italic = false },
+        },
+      }
+    end,
+  },
+  {
+    "projekt0n/github-nvim-theme",
+    name = "github-theme",
+    lazy = false,
+    priority = 1000,
+  },
+  {
+    "rebelot/kanagawa.nvim",
+    name = "kanagawa",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require("kanagawa").setup {
+        theme = "dragon",
+        background = {
+          dark = "dragon",
+          light = "lotus",
+        },
+      }
+    end,
+  },
+  {
+    "datsfilipe/min-theme.nvim",
+    lazy = false,
+    name = "min-theme",
+    priority = 1000,
+    config = function()
+      require("min-theme").setup {
+        theme = "dark",
+        transparent = false,
+        italics = {
+          comments = false,
+          keywords = false,
+          functions = false,
+          strings = false,
+          variables = false,
+        },
+      }
+      vim.cmd "colorscheme min-theme"
+    end,
+  },
+  {
     "datsfilipe/vesper.nvim",
     lazy = false,
     priority = 1000,
@@ -42,11 +100,6 @@ return {
         variables = false, -- Boolean: Italicizes variables
       },
     },
-  },
-  {
-    "xiyaowong/transparent.nvim",
-    lazy = false,
-    opts = {},
   },
   {
     "rose-pine/neovim",
@@ -89,7 +142,6 @@ return {
         borderless_pickers = false,
         cache = true,
       }
-      vim.cmd "colorscheme cyberdream"
     end,
   },
   {

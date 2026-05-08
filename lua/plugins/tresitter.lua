@@ -1,6 +1,6 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  branch = "master",
+  branch = "main",
   build = ":TSUpdate",
   lazy = false,
   dependencies = {
@@ -86,27 +86,8 @@ return {
       },
     },
   },
-  main = "nvim-treesitter.configs",
+  main = "nvim-treesitter",
   opts = {
-    ensure_installed = {
-      "c",
-      "cpp",
-      "go",
-      "lua",
-      "python",
-      "rust",
-      "tsx",
-      "typescript",
-      "javascript",
-      "vimdoc",
-      "vim",
-      "markdown",
-      "html",
-      "css",
-      "json",
-      "yaml",
-      "bash",
-    },
     sync_install = false,
     auto_install = true,
     highlight = {
@@ -128,6 +109,45 @@ return {
   },
   config = function(_, opts)
     require("nvim-treesitter.install").compilers = { "gcc", "clang" }
-    require("nvim-treesitter.configs").setup(opts)
+    require("nvim-treesitter").setup(opts)
+  end,
+  init = function()
+    vim.api.nvim_create_autocmd("FileType", {
+      callback = function()
+        -- Enable treesitter highlighting and disable regex syntax
+        pcall(vim.treesitter.start)
+        -- Enable treesitter-based indentation
+        vim.bo.indentexpr = "v:lua:requirre'nvim-treesitter'.indentexpr()"
+      end,
+    })
+
+    local ensureInstalled = {
+      "c",
+      "cpp",
+      "go",
+      "lua",
+      "python",
+      "rust",
+      "tsx",
+      "typescript",
+      "javascript",
+      "vimdoc",
+      "vim",
+      "markdown",
+      "html",
+      "css",
+      "json",
+      "yaml",
+      "bash",
+    }
+
+    local alreadyInstalled = require("nvim-treesitter.config").get_installed()
+    local parsersToInstall = vim
+      .iter(ensureInstalled)
+      :filter(function(parser)
+        return not vim.tbl_contains(alreadyInstalled, parser)
+      end)
+      :totable()
+    require("nvim-treesitter").install(parsersToInstall)
   end,
 }

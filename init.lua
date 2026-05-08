@@ -107,16 +107,6 @@ end
 
 require("lazy").setup("plugins", {})
 
--- [[ Custom Autocmds]]
-local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
-vim.api.nvim_create_autocmd("TextYankPost", {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = "*",
-})
-
 vim.api.nvim_create_autocmd({ "InsertLeave", "FocusLost", "BufLeave" }, {
   command = "silent! wa",
 })
@@ -126,6 +116,15 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.opt.iskeyword:append { "-", "#", "$" }
   end,
+})
+
+local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+  group = highlight_group,
+  pattern = "*",
 })
 
 vim.api.nvim_create_autocmd("TermOpen", {

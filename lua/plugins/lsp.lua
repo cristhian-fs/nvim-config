@@ -188,14 +188,6 @@ return {
         { "│", "FloatBorder" },
       }
 
-      local handlers = {
-        ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-          border = border,
-        }),
-        ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-          border = border,
-        }),
-      }
 
       -- Your existing floating preview override
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
@@ -209,9 +201,12 @@ return {
       vim.lsp.config("*", {
         capabilities = capabilities,
         on_attach = on_lsp_attach,
-        handlers = handlers,
         root_markers = { ".git" },
       })
+
+			vim.keymap.set('n', 'K', function()
+				vim.lsp.buf.hover({ border = 'rounded' })
+			end, { desc = "Hover Documentation" })
 
       vim.lsp.config("lua_ls", {
         settings = {
