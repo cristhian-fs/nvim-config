@@ -104,6 +104,10 @@ return {
   },
   { "chentoast/marks.nvim", event = "VeryLazy", opts = {} },
   {
+    "vyfor/cord.nvim",
+    opts = {},
+  },
+  {
     "chrisgrieser/nvim-various-textobjs",
     config = function()
       require("various-textobjs").setup {
@@ -197,11 +201,6 @@ return {
     "folke/ts-comments.nvim",
     event = "VeryLazy",
     opts = {},
-  },
-  {
-    "MeanderingProgrammer/render-markdown.nvim",
-    opts = {},
-    dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
   {
     "esmuellert/codediff.nvim",
