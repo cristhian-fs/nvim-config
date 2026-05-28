@@ -17,6 +17,7 @@ return {
         markdown = true,
         mason = true,
       },
+      transparent_background = true,
     },
     init = function()
       local catpuccin = require "catppuccin.palettes.mocha"
@@ -27,6 +28,7 @@ return {
       vim.api.nvim_set_hl(0, "WinSeparator", { bg = catpuccin.mantle, fg = catpuccin.surface1 })
       vim.api.nvim_set_hl(0, "TreesitterContextBottom", { sp = catpuccin.surface2, underline = false })
       vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", { sp = catpuccin.surface2, underline = false })
+      -- vim.cmd "colorscheme catppuccin"
     end,
   },
   {
@@ -84,7 +86,32 @@ return {
           variables = false,
         },
       }
-      vim.cmd "colorscheme min-theme"
+    end,
+  },
+  {
+    "nvim-mini/mini.base16",
+    version = false,
+    config = function()
+      require("mini.base16").setup {
+        palette = {
+          base00 = "#282725", -- background
+          base01 = "#22211F", -- background alt
+          base02 = "#3f3f3f", -- selection
+          base03 = "#8D867F", -- comments
+          base04 = "#ACA084", -- foreground dim
+          base05 = "#C4B9AD", -- foreground
+          base06 = "#C4B9AD", -- foreground bright
+          base07 = "#ffffff", -- foreground extra
+          base08 = "#F9615E", -- variables/params (rosa)
+          base09 = "#C97042", -- numbers/functions (laranja)
+          base0A = "#61aeee", -- types/classes (ciano)
+          base0B = "#98c379", -- strings (verde)
+          base0C = "#61aeee", -- escape chars (ciano)
+          base0D = "#c678dd", -- functions calls? depende do mapping
+          base0E = "#c678dd", -- keywords (roxo)
+          base0F = "#F0813D", -- deprecated/special (laranja)
+        },
+      }
     end,
   },
   {
