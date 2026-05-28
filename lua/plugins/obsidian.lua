@@ -12,20 +12,18 @@ return {
       workspaces = {
         {
           name = "second-brain",
-          path = "~/Documents/docs/second-brain/",
+          path = "~/Documents/vault/second-brain",
         },
       },
       notes_subdir = "notes",
-
       daily_notes = {
         folder = "inbox",
         date_format = "%Y-%m-%d",
         template = "Daily note",
-				skip_weekends = false
+        skip_weekends = false,
       },
-
       templates = {
-        folder = "../templates",
+        folder = "templates",
       },
       completion = {
         nvim_cmp = true,
@@ -40,8 +38,12 @@ return {
   },
   {
     "MeanderingProgrammer/render-markdown.nvim",
-    enabled = false,
-    opts = {},
+    enabled = true,
+    opts = {
+      window = {
+        width = 1.0, -- 100% da janela
+      },
+    },
     dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
   },
   {
@@ -50,8 +52,8 @@ return {
     build = "cd app && npm install",
     init = function()
       vim.g.mkdp_filetypes = { "markdown" }
-			vim.g.mkdp_browser = "brave-browser"
-			vim.g.mkdp_echo_preview_url = 1
+      vim.g.mkdp_browser = "brave-browser"
+      vim.g.mkdp_echo_preview_url = 1
     end,
     ft = { "markdown" },
   },
