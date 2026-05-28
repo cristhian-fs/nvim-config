@@ -51,9 +51,12 @@ map({ "n", "i" }, "<C-s>", function()
 end, { desc = "Save", silent = true })
 vim.api.nvim_create_autocmd("BufWritePre", {
   callback = function(args)
+    local is_prisma = vim.bo[args.buf].filetype == "prisma"
+
     require("conform").format {
       bufnr = args.buf,
       lsp_fallback = true,
+      formatters = is_prisma and { "lsp" } or nil,
     }
   end,
 })

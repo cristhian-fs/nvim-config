@@ -139,6 +139,8 @@ return {
       "json",
       "yaml",
       "bash",
+      "hurl",
+			"prisma"
     }
 
     local alreadyInstalled = require("nvim-treesitter.config").get_installed()

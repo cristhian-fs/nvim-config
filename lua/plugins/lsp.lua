@@ -16,6 +16,7 @@ return {
           markdown = { "prettierd", "prettier" },
           svg = { "prettier" },
           astro = { "prettier" },
+          prisma = { lsp_format = "first" },
         },
         format_on_save = {
           timeout_ms = 3000,
@@ -106,24 +107,24 @@ return {
             desc = "LSP: " .. desc
           end
 
-          vim.keymap.set("n", keys, func, { remap = true, buffer = bufnr, desc = desc, silent = true })
+          vim.keymap.set("n", keys, func, { noremap = true, buffer = bufnr, desc = desc, silent = true })
         end
 
-        lsp_map("<D-.>", function()
+        lsp_map("<leader>ca", function()
           require("tiny-code-action").code_action {}
         end, "Code Action")
-        lsp_map("<D-i>", function()
+        lsp_map("K", function()
           if client.name == "rust-analyzer" then
             vim.cmd.RustLsp { "hover", "actions" }
           else
             vim.lsp.buf.hover()
           end
         end, "Hover Documentation")
-        lsp_map("<D-r>", vim.lsp.buf.rename, "Rename")
+        lsp_map("<leader>rn", vim.lsp.buf.rename, "Rename")
         lsp_map("gD", vim.lsp.buf.definition, "Goto Declaration")
         lsp_map("gi", vim.lsp.buf.implementation, "Goto Implementation")
-        lsp_map("<D-g>", "<C-]>", "[G]oto [D]efinition")
-        lsp_map("<D-u>", vim.lsp.buf.signature_help, "Signature Documentation")
+        lsp_map("gd", "<C-]>", "[G]oto [D]efinition")
+        lsp_map("<C-k>", vim.lsp.buf.signature_help, "Signature Documentation")
 
         -- Various picker for lsp related stuff
         if Snacks and Snacks.picker then
@@ -141,7 +142,7 @@ return {
           vim.cmd "LspInfo"
         end, "Lsp [R]eload")
         lsp_map("<leader>lh", function()
-          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled(filter), { bufnr })
+          vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = bufnr }, { bufnr })
         end, "Lsp toggle inlay [h]ints")
       end
 
@@ -177,18 +178,6 @@ return {
         },
       }
 
-      local border = {
-        { "╭", "FloatBorder" },
-        { "─", "FloatBorder" },
-        { "╮", "FloatBorder" },
-        { "│", "FloatBorder" },
-        { "╯", "FloatBorder" },
-        { "─", "FloatBorder" },
-        { "╰", "FloatBorder" },
-        { "│", "FloatBorder" },
-      }
-
-
       -- Your existing floating preview override
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
       function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
@@ -203,10 +192,6 @@ return {
         on_attach = on_lsp_attach,
         root_markers = { ".git" },
       })
-
-			vim.keymap.set('n', 'K', function()
-				vim.lsp.buf.hover({ border = 'rounded' })
-			end, { desc = "Hover Documentation" })
 
       vim.lsp.config("lua_ls", {
         settings = {
