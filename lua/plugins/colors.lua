@@ -112,8 +112,25 @@ return {
           base0F = "#F0813D", -- deprecated/special (laranja)
         },
       }
+
+      require("animejs-theme").apply()
     end,
   },
+  -- {
+  --   "webhooked/kanso.nvim",
+  --   lazy = false,
+  --   priority = 1000,
+  --   opts = {},
+  --   config = function()
+  --     require("kanso").setup {
+  --       background = {
+  --         dark = "zen",
+  --         light = "pearl",
+  --       },
+  --     }
+  --     vim.cmd "colorscheme kanso"
+  --   end,
+  -- },
   {
     "datsfilipe/vesper.nvim",
     lazy = false,

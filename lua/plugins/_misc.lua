@@ -206,4 +206,7 @@ return {
     "esmuellert/codediff.nvim",
     cmd = "CodeDiff",
   },
+  {
+    "tpope/vim-abolish",
+  },
 }
