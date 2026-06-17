@@ -1,9 +1,5 @@
 return {
   {
-    "lewis6991/foldsigns.nvim",
-    opts = {},
-  },
-  {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.8",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -156,21 +152,6 @@ return {
       }
     end,
   },
-  -- Auto close brackets
-  -- {
-  --   "windwp/nvim-autopairs",
-  --   event = "InsertEnter",
-  --   opts = {
-  --     enable_check_bracket_line = false,
-  --   },
-  --   init = function()
-  --     local npairs = require "nvim-autopairs"
-  --     local rule = require "nvim-autopairs.rule"
-  --     local cond = require "nvim-autopairs.conds"
-  --
-  --     npairs.add_rules { rule("|", "|", { "rust", "go", "lua" }):with_move(cond.after_regex "|") }
-  --   end,
-  -- },
   -- Search and replace
   {
     "echasnovski/mini.pairs",
@@ -183,8 +164,19 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
     opts = {
-      preset = "modern",
+      preset = "helix",
     },
+    config = function()
+      local wk = require "which-key"
+      wk.add {
+        { "<leader>h", group = "harpoon" },
+        { "<leader>b", group = "buffers" },
+        { "<leader>f", group = "find" },
+        { "<leader>g", group = "git" },
+        { "<leader>o", group = "Obsidian" },
+        { "<leader>l", group = "LSP" },
+      }
+    end,
   },
   {
     "folke/persistence.nvim",
@@ -208,5 +200,55 @@ return {
   },
   {
     "tpope/vim-abolish",
+  },
+  {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local harpoon = require "harpoon"
+      harpoon:setup()
+
+      -- add the current file
+      vim.keymap.set("n", "<leader>a", function()
+        harpoon:list():add()
+      end, { desc = "Add buffer to harpoon" })
+
+      -- open menu
+      vim.keymap.set("n", "<leader>h", function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = "List harpoon buffers" })
+
+      vim.keymap.set("n", "<leader>x", function()
+        harpoon:list():remove()
+      end, { desc = "Remove current buffer from harpoon" })
+      -- direct navigation - the 4 slots
+      vim.keymap.set("n", "<leader>1", function()
+        harpoon:list():select(1)
+      end, { desc = "Harpoon slot 1" })
+      vim.keymap.set("n", "<leader>2", function()
+        harpoon:list():select(2)
+      end, { desc = "Harpoon slot 2" })
+      vim.keymap.set("n", "<leader>3", function()
+        harpoon:list():select(3)
+      end, { desc = "Harpoon slot 3" })
+      vim.keymap.set("n", "<leader>4", function()
+        harpoon:list():select(4)
+      end, { desc = "Harpoon slot 4" })
+    end,
+  },
+  {
+    "echasnovski/mini.bufremove",
+    config = function()
+      local bufremove = require "mini.bufremove"
+      bufremove.setup()
+
+      vim.keymap.set("n", "<leader>bd", function()
+        bufremove.delete(0, false) -- false = pede confirmação se tiver mudanças
+      end, { desc = "Delete buffer with confirmation" })
+      vim.keymap.set("n", "<leader>bD", function()
+        bufremove.delete(0, true) -- força, ignora mudanças
+      end, { desc = "Delete buffer within confirmation" })
+    end,
   },
 }
