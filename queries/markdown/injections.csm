@@ -1,0 +1,15 @@
+; extends
+
+; Highlight imports and exports as TSX
+((inline) @injection.content
+ (#lua-match? @injection.content "^%s*import")
+ (#set! injection.language "tsx"))
+
+((inline) @injection.content
+ (#lua-match? @injection.content "^%s*export")
+ (#set! injection.language "tsx"))
+
+; Highlight standard expressions inside curly braces as TSX
+((inline) @injection.content
+ (#lua-match? @injection.content "^{.*}$")
+ (#set! injection.language "tsx"))

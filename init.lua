@@ -14,7 +14,7 @@ vim.wo.relativenumber = true
 vim.o.shiftwidth = 2
 vim.o.tabstop = 2
 
-vim.o.conceallevel = 1
+vim.o.conceallevel = 0
 
 vim.o.tags = "./tags;"
 -- Enable mouse mode
@@ -135,7 +135,7 @@ vim.api.nvim_create_autocmd("TermOpen", {
   end,
 })
 
-vim.filetype.add { extension = { wgsl = "wgsl" } }
+vim.filetype.add { extension = { wgsl = "wgsl", mdx = "markdown" } }
 vim.keymap.set("n", "gf", function()
   require("fff").open_file_under_cursor(function()
     vim.api.nvim_command "wincmd k"

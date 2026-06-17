@@ -90,57 +90,19 @@ return {
   opts = {
     sync_install = false,
     auto_install = true,
-    highlight = {
-      enable = true,
-      additional_vim_regex_highlighting = false,
-    },
-    indent = {
-      enable = true,
-    },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "<c-space>",
-        node_incremental = "<c-space>",
-        scope_incremental = "<c-s>",
-        node_decremental = "<S-space>",
-      },
-    },
   },
   config = function(_, opts)
     require("nvim-treesitter.install").compilers = { "gcc", "clang" }
     require("nvim-treesitter").setup(opts)
   end,
   init = function()
-    vim.api.nvim_create_autocmd("FileType", {
-      callback = function()
-        -- Enable treesitter highlighting and disable regex syntax
-        pcall(vim.treesitter.start)
-        -- Enable treesitter-based indentation
-        vim.bo.indentexpr = "v:lua:requirre'nvim-treesitter'.indentexpr()"
-      end,
-    })
-
     local ensureInstalled = {
-      "c",
-      "cpp",
-      "go",
-      "lua",
-      "python",
-      "rust",
       "tsx",
-      "typescript",
-      "javascript",
-      "vimdoc",
-      "vim",
       "markdown",
-      "html",
-      "css",
-      "json",
-      "yaml",
-      "bash",
+      "markdown_inline",
+      "mdx",
       "hurl",
-			"prisma"
+      "prisma",
     }
 
     local alreadyInstalled = require("nvim-treesitter.config").get_installed()
@@ -151,5 +113,7 @@ return {
       end)
       :totable()
     require("nvim-treesitter").install(parsersToInstall)
+
+    vim.treesitter.language.register("markdown", "mdx")
   end,
 }

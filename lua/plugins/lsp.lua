@@ -17,6 +17,9 @@ return {
           svg = { "prettier" },
           astro = { "prettier" },
           prisma = { lsp_format = "first" },
+          mdx = { "prettierd", "prettier" },
+          bash = { "shfmt", "beautysh" },
+          sh = { "shfmt", "beautysh" },
         },
         format_on_save = {
           timeout_ms = 3000,
@@ -25,7 +28,7 @@ return {
 
       local function format()
         require("conform").format {
-          lsp_fallback = true,
+          lsp_format = "fallback",
         }
       end
 
@@ -101,6 +104,8 @@ return {
       },
     },
     config = function()
+      require("mason").setup()
+
       local on_lsp_attach = function(client, bufnr)
         local lsp_map = function(keys, func, desc)
           if desc then
@@ -182,7 +187,6 @@ return {
       local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
       function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
         opts = opts or {}
-        opts.border = opts.border or border
         return orig_util_open_floating_preview(contents, syntax, opts, ...)
       end
 
@@ -245,8 +249,6 @@ return {
       vim.lsp.enable "jsonls"
       vim.lsp.enable "cssls"
       vim.lsp.enable "astro"
-
-      require("mason").setup()
     end,
   },
 }
