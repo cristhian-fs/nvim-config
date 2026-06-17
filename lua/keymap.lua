@@ -162,10 +162,10 @@ map(
 )
 
 -- Move between windows
-map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("n", "<C-j>", "<C-w>j", { desc = "Go to bottom window" })
-map("n", "<C-k>", "<C-w>k", { desc = "Go to top window" })
-map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+-- map("n", "<C-h>", "<C-w>h", { desc = "Go to left window" })
+-- map("n", "<C-j>", "<C-w>j", { desc = "Go to bottom window" })
+-- map("n", "<C-k>", "<C-w>k", { desc = "Go to top window" })
+-- map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
 map("n", "<leader>on", "<cmd>ObsidianNew<cr>", { desc = "New note" })
 map("n", "<leader>oN", "<cmd>ObsidianNewFromTemplate<cr>", { desc = "New from template" })
